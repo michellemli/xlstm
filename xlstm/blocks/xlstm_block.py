@@ -74,7 +74,8 @@ class xLSTMBlock(nn.Module):
         self.reset_parameters()
 
     def forward(self, x: torch.Tensor, **kwargs) -> torch.Tensor:
-        x = x + self.xlstm(self.xlstm_norm(x), **kwargs)
+        #x = x + self.xlstm(self.xlstm_norm(x), **kwargs) # Original
+        x = x + self.xlstm(self.xlstm_norm(x.clone()), **kwargs) # Updated to avoid in-place modification errors
         if self.ffn is not None:
             x = x + self.ffn(self.ffn_norm(x), **kwargs)
         return x
