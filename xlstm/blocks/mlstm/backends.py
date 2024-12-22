@@ -73,6 +73,7 @@ def parallel_stabilized_simple(
         max_log_D = torch.max(log_D_matrix.view(B, NH, -1), dim=-1, keepdim=True)[0].unsqueeze(-1)
         # (B, NH, 1, 1)
     log_D_matrix_stabilized = log_D_matrix - max_log_D  # (B, NH, S, S)
+    max_log_D = torch.clamp(max_log_D, min = -80) # Avoid NaNs; tried many min values, -90 fails
     D_matrix = torch.exp(log_D_matrix_stabilized)  # (B, NH, S, S)
 
     keys_scaled = keys / math.sqrt(DH)
